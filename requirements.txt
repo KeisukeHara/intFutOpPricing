@@ -1,0 +1,4 @@
+fastapi==0.98.0
+uvicorn==0.22.0
+QuantLib==1.30
+QuantLib-Python==1.18
