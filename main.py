@@ -14,6 +14,7 @@ class IntFutOpTrade(BaseModel):
     amount:float
 
 
+
 class MarketInputData(BaseModel):
     evaluation_date:str
     spot_date:str
@@ -27,6 +28,7 @@ class CalcPvRequest(BaseModel):
 
 class CalcPvResponse(BaseModel):
     trade_id:str
+    premium:float
     pv: float
 
 
@@ -75,8 +77,11 @@ async def calc_pv(req: CalcPvRequest) -> CalcPvResponse:
     market_data = pl.MarketData(evaluation_date, spot_date, interest_rate, volatility, underlying_price)
 
     #計算実行
-    pv = pl.calculate_option_price(trade_data, market_data)
+    premium = pl.calculate_option_price(trade_data, market_data)
+    pv = premium / 100 / 4 * req.trade_data.amount
+    if req.trade_data.buy_sell == "S":
+        premium *= -1
 
-    result = CalcPvResponse(trade_id=req.trade_data.trade_id,pv=pv)
+    result = CalcPvResponse(trade_id=req.trade_data.trade_id, premium=premium, pv=pv)
 
     return result
