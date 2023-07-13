@@ -43,8 +43,8 @@ async def top():
     "strike": 100,
     "expiration_date": "20230914",
     "call_put": "C",
-    "buy_sell": "string",
-    "amount": 0
+    "buy_sell": "S",
+    "amount": 1000000
   },
   "market_data": {
     "evaluation_date": "20230712",
@@ -80,7 +80,7 @@ async def calc_pv(req: CalcPvRequest) -> CalcPvResponse:
     premium = pl.calculate_option_price(trade_data, market_data)
     pv = premium / 100 / 4 * req.trade_data.amount
     if req.trade_data.buy_sell == "S":
-        premium *= -1
+        pv *= -1
 
     result = CalcPvResponse(trade_id=req.trade_data.trade_id, premium=premium, pv=pv)
 
